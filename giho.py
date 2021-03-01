@@ -110,4 +110,6 @@ class Giho:
         res += i
       if i in filt.values():
         res += f'{rep}{list(filt.keys())[list(filt.values()).index(i)]}'
-    return self.strip(res, rep)
+    return self.replAll(self.strip(res, rep), {
+      '()': '', '""': '', '\'\'': ''
+    })
