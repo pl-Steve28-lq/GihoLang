@@ -89,18 +89,25 @@ class Giho:
       targ = targ.replace(i, info[i])
     return targ
   
-  def stripLine(self, targ):
+  def strip(self, targ, k):
+    if not targ: return targ
     while True:
-      if targ[0] != '\n': break
+      if targ[0] != k: break
       targ = targ[1:]
     while True:
-      if targ[-1] != '\n': break
+      if targ[-1] != k: break
       targ = targ[:-1]
     return targ
+  
+  stripLine = lambda self, targ: self.strip(self, targ, '\n')
 
-  def simplify(self, code):
-    filt = { '   ': '^', '  ': '&', ' .': '#', ' ,': '$', ' !': '`', '\n ': ''}
-    code = self.filter(code)
-    for i in filt:
-      code = code.replace(filt[i], i)
-    return code
+  def simplify(self, code, rep='|'):
+    filt = { '   ': '^', '  ': '&', ' .': '#', ' ,': '$', ' !': '`', '\n ': '' }
+    code = self.replAll(code, filt)
+    res = ''
+    for i in code:
+      if i in '.,!?()\'"\n':
+        res += i
+      if i in filt.values():
+        res += f'{rep}{list(filt.keys())[list(filt.values()).index(i)]}'
+    return self.strip(res, rep)
